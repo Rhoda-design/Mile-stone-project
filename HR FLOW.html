@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BCM Appraisal Portal — HR Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--y:#FCB900;--yl:#FFF8E1;--dark:#101018;--bg:#F7F7F5;--w:#fff;--bd:#E2E2DC;--tx:#1A1A18;--mt:#6B6B67;--ok:#16A34A;--er:#DC2626;--info:#2563EB;--f:system-ui,-apple-system,sans-serif}
+body{font-family:var(--f);background:var(--bg);min-height:100vh}
+.scr{display:none}.scr.on{display:block}
+
+/* ── HEADER ── */
+.hdr{background:var(--dark);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:200}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-text{color:#fff;font-size:13px;font-weight:800;letter-spacing:.6px;line-height:1.25;text-transform:uppercase}
+.cy-pill{border:1.5px solid var(--y);color:var(--y);font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px}
+.av-wrap{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.6);font-size:12px}
+.avt{width:28px;height:28px;border-radius:50%;background:#2A2A38;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* ── LOGIN ── */
+.login-shell{background:#E8E8E6;min-height:100vh;display:flex;flex-direction:column}
+.login-tag{height:40px;display:flex;align-items:center;padding:0 28px;font-size:10px;font-weight:700;letter-spacing:1.4px;color:#888;text-transform:uppercase}
+.login-panel{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.card{background:var(--w);border-radius:12px;width:100%;max-width:320px;padding:36px 30px;text-align:center;box-shadow:0 2px 28px rgba(0,0,0,.1)}
+.card h1{font-size:20px;font-weight:700;color:var(--tx);letter-spacing:-.4px;margin-bottom:8px}
+.card-sub{font-size:13px;color:#888;line-height:1.65;margin-bottom:22px}
+.fld{text-align:left;margin-bottom:14px}
+.fld label{display:block;font-size:12px;font-weight:600;color:#555;margin-bottom:5px}
+.fld label span{color:var(--y)}
+.fld input{width:100%;border:1.5px solid #D5D5D5;border-radius:7px;padding:10px 13px;font-size:14px;color:var(--tx);outline:none;font-family:var(--f);transition:border .15s;background:#FAFAFA}
+.fld input:focus{border-color:var(--y);background:#fff}
+.fld input.err{border-color:var(--er)}
+.err-txt{font-size:11px;color:var(--er);margin-top:4px;display:none}.err-txt.on{display:block}
+.cta-btn{width:100%;border:none;border-radius:7px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--f);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.cta-send{background:var(--y);color:var(--dark)}.cta-send:hover{background:#e8a900}
+.cta-sending{background:#EEEEE8;color:#aaa;cursor:not-allowed}
+.cta-open{background:var(--y);color:var(--dark)}
+.spin{width:13px;height:13px;border:2px solid #bbb;border-top-color:#777;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.help-txt{font-size:12px;color:#aaa;margin-top:14px}
+.help-txt a{color:var(--y);text-decoration:none;font-weight:500}
+.email-icon-ring{width:54px;height:54px;border-radius:50%;background:var(--yl);border:2px solid var(--y);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+
+/* ── SUB NAV ── */
+.subnav{background:var(--w);border-bottom:1px solid var(--bd);position:sticky;top:56px;z-index:100}
+.subnav-inner{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;align-items:center;height:46px;gap:4px}
+.sn-tab{padding:8px 14px;font-size:13px;font-weight:500;color:var(--mt);border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap;border:none;background:transparent;font-family:var(--f)}
+.sn-tab:hover{background:#F5F5F2;color:var(--tx)}
+.sn-tab.on{background:var(--dark);color:#fff;font-weight:600}
+
+/* ── WRAP ── */
+.wrap{max-width:1080px;margin:0 auto;padding:26px 24px}
+
+/* ── BUTTONS ── */
+.btn{border:none;padding:9px 20px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--f);transition:all .15s}
+.btn-p{background:var(--y);color:var(--dark)}.btn-p:hover{background:#e8a900}
+.btn-s{background:var(--w);color:var(--tx);border:1px solid var(--bd)}.btn-s:hover{background:var(--bg)}
+.btn-ok{background:var(--ok);color:#fff}.btn-ok:hover{background:#15803d}
+.btn-full{width:100%}
+.btn-sm{padding:6px 13px;font-size:12px}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.stat{background:var(--w);border:1px solid var(--bd);border-radius:9px;padding:14px 16px}
+.stat-v{font-size:28px;font-weight:700;color:var(--tx)}
+.stat-l{font-size:11px;color:var(--mt);margin-top:3px}
+.stat.ok .stat-v{color:var(--ok)}.stat.amber .stat-v{color:#D97706}.stat.red .stat-v{color:var(--er)}
+
+/* ── TOP ROW ── */
+.top-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:16px;flex-wrap:wrap}
+.top-left h1{font-size:20px;font-weight:700;color:var(--tx);letter-spacing:-.4px}
+.top-left p{font-size:12px;color:var(--mt);margin-top:3px}
+.top-right{display:flex;gap:8px;align-items:center;flex-shrink:0}
+
+/* ── FILTER ROW ── */
+.filter-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.fsel{border:1px solid var(--bd);border-radius:7px;padding:7px 11px;font-size:12px;color:var(--tx);background:var(--w);outline:none;cursor:pointer;font-family:var(--f)}
+.fsel:focus{border-color:var(--y)}
+.srch{flex:1;min-width:160px;border:1px solid var(--bd);border-radius:7px;padding:7px 13px;font-size:12px;color:var(--tx);background:var(--w);outline:none;font-family:var(--f)}
+.srch:focus{border-color:var(--y)}
+
+/* ── DATA TABLE ── */
+.dtable{background:var(--w);border:1px solid var(--bd);border-radius:10px;overflow:hidden;overflow-x:auto}
+.dt-hdr{display:grid;grid-template-columns:28px 200px 120px 130px 80px 80px 80px 80px 70px;gap:0;padding:10px 16px;background:#FAFAF8;border-bottom:1px solid var(--bd);min-width:900px}
+.dth{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mt)}
+.dt-row{display:grid;grid-template-columns:28px 200px 120px 130px 80px 80px 80px 80px 70px;gap:0;padding:12px 16px;border-bottom:1px solid var(--bd);align-items:center;transition:background .1s;min-width:900px}
+.dt-row:last-child{border-bottom:none}
+.dt-row:hover{background:#FAFAFA}
+.dt-row.sel{background:var(--yl)}
+.emp-name{font-size:13px;font-weight:500;color:var(--tx)}
+.emp-dept{font-size:11px;color:var(--mt);margin-top:1px}
+.emp-mgr{font-size:12px;color:var(--mt)}
+.sp{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.sp-p{background:#F5F5F0;color:var(--mt)}
+.sp-o{background:var(--yl);color:#7B5800}
+.sp-d{background:#F0FDF4;color:var(--ok)}
+.sp-e{background:#FEF2F2;color:var(--er)}
+.chk{width:14px;height:14px;accent-color:var(--dark);cursor:pointer}
+.nudge-bar{background:var(--dark);border-radius:8px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.nudge-bar p{color:rgba(255,255,255,.8);font-size:13px}
+.gd{font-size:12px;font-weight:700;width:24px;height:24px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center}
+.gdA{background:#F0FDF4;color:var(--ok)}.gdB{background:#EFF6FF;color:var(--info)}.gdC{background:#FFFBEB;color:#D97706}.gdD{background:#FEF2F2;color:var(--er)}.gdn{background:#F5F5F0;color:var(--mt)}
+
+/* ── CYCLE FORM ── */
+.form-sec{background:var(--w);border:1px solid var(--bd);border-radius:10px;padding:20px;margin-bottom:14px}
+.form-sec h3{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.field input,.field select{width:100%;border:1.5px solid var(--bd);border-radius:7px;padding:9px 13px;font-size:14px;color:var(--tx);outline:none;font-family:var(--f);background:var(--w)}
+.field input:focus,.field select:focus{border-color:var(--y)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.phase-config{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+.pc-item{background:#FAFAF8;border:1px solid var(--bd);border-radius:7px;padding:11px}
+.pc-item label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mt);display:block;margin-bottom:5px}
+.pc-item input{width:100%;border:1px solid var(--bd);border-radius:5px;padding:6px 9px;font-size:12px;outline:none;font-family:var(--f)}
+.pc-item input:focus{border-color:var(--y)}
+.elig-info{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:7px;padding:11px 14px;font-size:13px;color:var(--ok);margin-top:10px}
+.ff{display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:1px solid var(--bd);margin-top:4px}
+.fa{display:flex;gap:8px}
+
+/* ── BROADSHEET ── */
+.bs-preview{background:var(--w);border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.bs-hdr{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.bs-hdr-t{font-size:14px;font-weight:700;color:var(--tx)}
+.bs-table{overflow-x:auto}
+.bs-table table{width:100%;border-collapse:collapse;font-size:12px}
+.bs-table th{background:#FAFAF8;padding:9px 13px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mt);text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap}
+.bs-table td{padding:10px 13px;border-bottom:1px solid var(--bd);color:var(--tx);white-space:nowrap}
+.bs-table tr:last-child td{border-bottom:none}
+.bs-table tr:hover td{background:#FAFAFA}
+
+/* ── NOTIFICATIONS ── */
+.notif-card{background:var(--w);border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.notif-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--bd)}
+.notif-row:last-child{border-bottom:none}
+.notif-title{font-size:13px;font-weight:500;color:var(--tx)}
+.notif-sub{font-size:11px;color:var(--mt);margin-top:2px}
+.notif-badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px}
+.nb-auto{background:#F0FDF4;color:var(--ok)}
+.nb-man{background:var(--yl);color:#7B5800}
+</style>
+</head>
+<body>
+
+<!-- LOGIN HEADER -->
+<div id="loginHdr">
+  <div style="background:#1A1A1A;padding:13px 28px;display:flex;align-items:center;justify-content:space-between">
+    <div class="logo" onclick="goHome()">
+      <svg width="32" height="32" viewBox="0 0 100 100" fill="none"><path d="M28 6 L72 6 L94 28 L94 72 L72 94 L28 94 L6 72 L6 28 Z" stroke="white" stroke-width="5" fill="none"/><path d="M50 18 L76 34 L76 66 L50 82 L24 66 L24 34 Z" stroke="white" stroke-width="4" fill="none"/></svg>
+      <div class="logo-text">BIG CABAL<br>MEDIA</div>
+    </div>
+    <div class="cy-pill">H1 2026 Cycle · Jan–June</div>
+  </div>
+</div>
+
+<!-- APP HEADER -->
+<div id="appHdr" style="display:none">
+  <div class="hdr">
+    <div class="logo" onclick="goHome()">
+      <svg width="28" height="28" viewBox="0 0 100 100" fill="none"><path d="M28 6 L72 6 L94 28 L94 72 L72 94 L28 94 L6 72 L6 28 Z" stroke="white" stroke-width="5" fill="none"/><path d="M50 18 L76 34 L76 66 L50 82 L24 66 L24 34 Z" stroke="white" stroke-width="4" fill="none"/></svg>
+      <div class="logo-text">BIG CABAL<br>MEDIA</div>
+    </div>
+    <div class="cy-pill">H1 2026 · Jan–Jun</div>
+    <div class="av-wrap"><div class="avt" id="appAv">CE</div><span id="appName">Chinaza Eneh · HR Admin</span></div>
+  </div>
+  <div class="subnav">
+    <div class="subnav-inner">
+      <button class="sn-tab on" id="sn-dash" onclick="showTab('dash')">Dashboard</button>
+      <button class="sn-tab" id="sn-cycle" onclick="showTab('cycle')">Create Cycle</button>
+      <button class="sn-tab" id="sn-export" onclick="showTab('export')">Broadsheet Export</button>
+      <button class="sn-tab" id="sn-notif" onclick="showTab('notif')">Notifications</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ S0: LOGIN ════ -->
+<div class="scr on" id="s0">
+  <div class="login-shell">
+    <div class="login-tag">LOGIN — HR ADMIN</div>
+    <div class="login-panel">
+      <div class="card" id="cardA">
+        <h1>Appraisal Portal</h1>
+        <p class="card-sub">Sign in with your BCM work email and we'll send you a secure login link</p>
+        <div class="fld">
+          <label>Work Email <span>*</span></label>
+          <input type="email" id="emailInp" placeholder="chinaza@bigcabal.com" oninput="clearErr()" onkeydown="if(event.key==='Enter')doSend()"/>
+          <div class="err-txt" id="errTxt">Please enter a valid BCM email address.</div>
+        </div>
+        <button class="cta-btn cta-send" onclick="doSend()">Send Login Link</button>
+        <div class="help-txt">Having trouble? Contact <a href="#">IT Support</a></div>
+      </div>
+      <div class="card" id="cardB" style="display:none">
+        <div class="email-icon-ring">
+          <svg width="22" height="18" viewBox="0 0 26 20" fill="none"><rect x="1" y="1" width="24" height="18" rx="3" stroke="#FCB900" stroke-width="1.8"/><path d="M1 4l12 8 12-8" stroke="#FCB900" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <h1 style="font-size:18px">Check your email</h1>
+        <p class="card-sub" style="margin-bottom:6px">We sent a secure link to</p>
+        <p style="font-weight:700;color:var(--tx);font-size:14px;margin-bottom:16px" id="sentEmail">—</p>
+        <div style="background:#FAFAFA;border:1px solid var(--bd);border-radius:8px;padding:11px 14px;font-size:12px;color:#999;line-height:1.65;text-align:left;margin-bottom:20px">Link expires in <strong style="color:var(--tx)">15 minutes</strong>. Check spam if needed.</div>
+        <button class="cta-btn cta-sending" id="ctaB" disabled><div class="spin"></div>Sending link →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ S1: HR DASHBOARD ════ -->
+<div class="scr" id="s1">
+  <div class="wrap">
+    <div class="top-row">
+      <div class="top-left">
+        <h1>H1 2026 Appraisal Dashboard</h1>
+        <p>January – June 2026 · 92 eligible employees · Deadline: 27 June 2026</p>
+      </div>
+      <div class="top-right">
+        <button class="btn btn-s btn-sm" onclick="showTab('cycle')">+ New cycle</button>
+        <button class="btn btn-p btn-sm" onclick="showTab('export')">↓ Export broadsheet</button>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-v">92</div><div class="stat-l">Total employees</div></div>
+      <div class="stat ok"><div class="stat-v">34</div><div class="stat-l">Complete</div></div>
+      <div class="stat amber"><div class="stat-v">41</div><div class="stat-l">In progress</div></div>
+      <div class="stat red"><div class="stat-v">12</div><div class="stat-l">Overdue</div></div>
+      <div class="stat"><div class="stat-v">5</div><div class="stat-l">Not started</div></div>
+    </div>
+
+    <div id="nudgeBar" style="display:none" class="nudge-bar">
+      <p id="nudgeCount">0 employees selected</p>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-s btn-sm" onclick="clearSel()">Clear</button>
+        <button class="btn btn-p btn-sm" onclick="sendNudge()">Send reminder email</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <input class="srch" placeholder="Search by name or department…"/>
+      <select class="fsel"><option>All departments</option><option>Design</option><option>Growth</option><option>TC</option><option>Business Development</option><option>Product</option></select>
+      <select class="fsel"><option>All statuses</option><option>Complete</option><option>In Progress</option><option>Overdue</option><option>Not Started</option></select>
+      <select class="fsel"><option>All managers</option><option>Aderemi Oladele</option><option>Daniel Adeyemi</option><option>Gartrude Obi</option></select>
+    </div>
+
+    <div class="dtable">
+      <div class="dt-hdr">
+        <div><input type="checkbox" class="chk" id="selAll" onchange="togAll(this)"/></div>
+        <div class="dth">Employee</div>
+        <div class="dth">Department</div>
+        <div class="dth">Manager</div>
+        <div class="dth">KPI Setup</div>
+        <div class="dth">Self-Review</div>
+        <div class="dth">Mgr Review</div>
+        <div class="dth">Discussion</div>
+        <div class="dth">Grade</div>
+      </div>
+      <div id="trows"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ S2: CREATE CYCLE ════ -->
+<div class="scr" id="s2">
+  <div class="wrap">
+    <div style="margin-bottom:18px"><h1 style="font-size:20px;font-weight:700;color:var(--tx);letter-spacing:-.4px">Create appraisal cycle</h1><p style="font-size:13px;color:var(--mt);margin-top:3px">The system will automatically generate one record per eligible employee (6+ months tenure).</p></div>
+
+    <div class="form-sec">
+      <h3>Cycle details</h3>
+      <div class="field-row">
+        <div class="field"><label>Cycle name</label><input value="H1 2026 Appraisal Cycle" placeholder="e.g. H1 2026 Appraisal Cycle"/></div>
+        <div class="field"><label>Period</label><select><option>H1 (January – June)</option><option>H2 (July – December)</option></select></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Start date</label><input type="date" value="2026-01-01"/></div>
+        <div class="field"><label>End date</label><input type="date" value="2026-06-30"/></div>
+      </div>
+    </div>
+
+    <div class="form-sec">
+      <h3>Phase deadlines <span style="font-size:11px;font-weight:400;color:var(--mt)">(optional — leave blank for flexible mode)</span></h3>
+      <div class="phase-config">
+        <div class="pc-item"><label>KPI Setup</label><input type="date" placeholder="No deadline"/></div>
+        <div class="pc-item"><label>Self-Review</label><input type="date" value="2026-06-20"/></div>
+        <div class="pc-item"><label>Mgr Review</label><input type="date" value="2026-06-24"/></div>
+        <div class="pc-item"><label>Discussion</label><input type="date" value="2026-06-26"/></div>
+        <div class="pc-item"><label>Close</label><input type="date" value="2026-06-27"/></div>
+      </div>
+    </div>
+
+    <div class="form-sec">
+      <h3>Eligibility</h3>
+      <p style="font-size:13px;color:var(--mt);margin-bottom:10px">Staff with less than 6 months tenure are automatically excluded based on their start date in the system.</p>
+      <div class="elig-info"><strong>92 employees eligible</strong> · 8 excluded (below 6-month tenure threshold)</div>
+    </div>
+
+    <div class="ff">
+      <button class="btn btn-s" onclick="showTab('dash')">← Cancel</button>
+      <div class="fa">
+        <button class="btn btn-s">Save as draft</button>
+        <button class="btn btn-ok" onclick="cycleLaunched()">Create cycle and notify all staff</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cycle launched confirmation -->
+<div class="scr" id="s2c">
+  <div style="min-height:calc(100vh - 102px);display:flex;align-items:center;justify-content:center;padding:40px 20px">
+    <div style="background:var(--w);border:1px solid var(--bd);border-radius:12px;max-width:400px;width:100%;padding:40px 32px;text-align:center">
+      <div style="width:64px;height:64px;border-radius:50%;background:#F0FDF4;border:2px solid var(--ok);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px">✓</div>
+      <h2 style="font-size:21px;font-weight:700;color:var(--tx);margin-bottom:8px">Cycle created</h2>
+      <p style="font-size:13px;color:var(--mt);line-height:1.65;margin-bottom:22px">92 appraisal records generated. Welcome emails queued for all eligible employees.</p>
+      <button class="btn btn-p btn-full" onclick="showTab('dash')">← Back to dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ S3: BROADSHEET EXPORT ════ -->
+<div class="scr" id="s3">
+  <div class="wrap">
+    <div style="margin-bottom:18px"><h1 style="font-size:20px;font-weight:700;color:var(--tx);letter-spacing:-.4px">Broadsheet export</h1><p style="font-size:13px;color:var(--mt);margin-top:3px">Complete record of all scores, grades, and recommendations for H1 2026.</p></div>
+
+    <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="alert('Downloading broadsheet_H1_2026.xlsx…')">↓ Export as Excel (.xlsx)</button>
+      <button class="btn btn-s" onclick="alert('Downloading broadsheet_H1_2026.csv…')">↓ Export as CSV</button>
+      <span style="font-size:12px;color:var(--mt);margin-left:4px">Last updated: today at 11:42 AM · 92 rows</span>
+    </div>
+
+    <div class="bs-preview">
+      <div class="bs-hdr"><div class="bs-hdr-t">Preview — first 8 rows</div><span style="font-size:11px;color:var(--mt)">92 employees total</span></div>
+      <div class="bs-table"><table>
+        <thead><tr><th>Name</th><th>Dept</th><th>Manager</th><th>V&amp;B (self)</th><th>KPI (self)</th><th>Avg (self)</th><th>V&amp;B (mgr)</th><th>KPI (mgr)</th><th>Avg (mgr)</th><th>Final grade</th><th>Recommendation</th><th>Outcome</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Esere Sobotie</td><td>Design</td><td>Aderemi Oladele</td><td>72%</td><td>84%</td><td>78%</td><td>68%</td><td>80%</td><td>74%</td><td><span class="gd gdB">B</span></td><td>Good performance</td><td>No action</td><td><span class="sp sp-d">Complete</span></td></tr>
+          <tr><td>Mayomikun Eze</td><td>Design</td><td>Aderemi Oladele</td><td>90%</td><td>98%</td><td>94%</td><td>88%</td><td>96%</td><td>92%</td><td><span class="gd gdA">A</span></td><td>Outstanding performance</td><td>Bonus recommended</td><td><span class="sp sp-d">Complete</span></td></tr>
+          <tr><td>Aisha Idowu</td><td>Design</td><td>Aderemi Oladele</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="gd gdn">—</span></td><td>—</td><td>—</td><td><span class="sp sp-o">Self-Review Open</span></td></tr>
+          <tr><td>Asah Nworah</td><td>Growth</td><td>Daniel Adeyemi</td><td>78%</td><td>82%</td><td>80%</td><td>75%</td><td>79%</td><td>77%</td><td><span class="gd gdB">B</span></td><td>Very good performance</td><td>No action</td><td><span class="sp sp-d">Complete</span></td></tr>
+          <tr><td>Gartrude Obi</td><td>Biz Dev</td><td>Mayomikun Adeyemi</td><td>85%</td><td>91%</td><td>88%</td><td>82%</td><td>88%</td><td>85%</td><td><span class="gd gdA">A</span></td><td>Outstanding performance</td><td>Salary review due</td><td><span class="sp sp-d">Complete</span></td></tr>
+          <tr><td>Eme Uchenna</td><td>TC</td><td>Olanrewaju Taiwo</td><td>62%</td><td>58%</td><td>60%</td><td>60%</td><td>55%</td><td>57%</td><td><span class="gd gdD">D</span></td><td>Performance Warning rec.</td><td>PIP required</td><td><span class="sp sp-d">Complete</span></td></tr>
+          <tr><td>Mariam Bello</td><td>Growth</td><td>Daniel Adeyemi</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="gd gdn">—</span></td><td>—</td><td>—</td><td><span class="sp sp-e">Overdue</span></td></tr>
+          <tr><td>Oluwaseun Adele</td><td>Design</td><td>Aderemi Oladele</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="gd gdn">—</span></td><td>—</td><td>—</td><td><span class="sp sp-p">KPI Pending</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ S4: NOTIFICATIONS ════ -->
+<div class="scr" id="s4">
+  <div class="wrap">
+    <div style="margin-bottom:18px"><h1 style="font-size:20px;font-weight:700;color:var(--tx);letter-spacing:-.4px">Notifications</h1><p style="font-size:13px;color:var(--mt);margin-top:3px">All 10 email triggers for the H1 2026 cycle. Automated triggers fire on their own. Manual triggers require your action.</p></div>
+
+    <div class="notif-card">
+      <div class="notif-row">
+        <div><div class="notif-title">Cycle opens — all employees &amp; managers</div><div class="notif-sub">Explains the cycle, what to expect, and deadlines.</div></div>
+        <span class="notif-badge nb-auto">Sent automatically</span>
+      </div>
+      <div class="notif-row">
+        <div><div class="notif-title">Manager KPI deadline –24 hrs</div><div class="notif-sub">Only fires if a deadline is set and the manager is overdue.</div></div>
+        <span class="notif-badge nb-auto">Auto on deadline</span>
+      </div>
+      <div class="notif-row">
+        <div><div class="notif-title">Manager submits KPI setup → Employee notified</div><div class="notif-sub">Self-review is now open.</div></div>
+        <span class="notif-badge nb-auto">Sent automatically</span>
+      </div>
+      <div class="notif-row">
+        <div><div class="notif-title">Self-review deadline –24 hrs</div><div class="notif-sub">Only fires if a deadline is set and the employee is overdue.</div></div>
+        <span class="notif-badge nb-auto">Auto on deadline</span>
+      </div>
+      <div class="notif-row">
+        <div><div class="notif-title">Employee submits self-review → Manager notified</div><div class="notif-sub">Manager review is now open.</div></div>
+        <span class="notif-badge nb-auto">Sent automatically</span>
+      </div>
+      <div class="notif-row">
+        <div><div class="notif-title">Manager review deadline –24 hrs</div><div class="notif-sub">Only fires if a deadline is set and the manager is overdue.</div></div>
+        <span class="notif-badge nb-auto">Auto on deadline</span>
+      </div>
+      <div class="notif-row">
+        <div><div class="notif-title">Manager submits review → Employee &amp; HR notified</div><div class="notif-sub">Discussion to be scheduled.</div></div>
+        <span class="notif-badge nb-auto">Sent automatically</span>
+      </div>
+      <div class="notif-row">
+        <div><div class="notif-title">HR marks discussion as held → Manager notified</div><div class="notif-sub">Confirmation for the manager's records.</div></div>
+        <span class="notif-badge nb-man">Manual trigger</span>
+      </div>
+      <div class="notif-row">
+        <div><div class="notif-title">HR sets outcome &amp; closes record → Employee notified</div><div class="notif-sub">"Your appraisal is ready to view."</div></div>
+        <span class="notif-badge nb-man">Manual trigger</span>
+      </div>
+      <div class="notif-row">
+        <div><div class="notif-title">Employee acknowledges → Manager &amp; HR notified</div><div class="notif-sub">Record is now complete.</div></div>
+        <span class="notif-badge nb-auto">Sent automatically</span>
+      </div>
+    </div>
+
+    <div style="background:var(--yl);border:1px solid #FFE082;border-radius:8px;padding:13px 16px;font-size:13px;color:#7B5800;margin-top:4px">
+      ✉️ Subject lines and body copy for all triggers can be configured in your HR admin settings. Contact IT to update templates.
+    </div>
+  </div>
+</div>
+
+<script>
+// ── LOGIN ──
+function clearErr() { document.getElementById('errTxt').classList.remove('on'); document.getElementById('emailInp').classList.remove('err'); }
+function cap(s) { return s ? s[0].toUpperCase() + s.slice(1) : ''; }
+function doSend() {
+  const inp = document.getElementById('emailInp'), v = inp.value.trim();
+  if (!v || !v.includes('@') || !v.includes('.')) { document.getElementById('errTxt').classList.add('on'); inp.classList.add('err'); return; }
+  document.getElementById('sentEmail').textContent = v;
+  document.getElementById('cardA').style.display = 'none';
+  document.getElementById('cardB').style.display = 'block';
+  setTimeout(() => {
+    const btn = document.getElementById('ctaB');
+    btn.disabled = false; btn.className = 'cta-btn cta-open'; btn.innerHTML = 'Open Email App';
+    btn.onclick = enterApp;
+  }, 1400);
+}
+function enterApp() {
+  document.getElementById('s0').classList.remove('on');
+  document.getElementById('loginHdr').style.display = 'none';
+  document.getElementById('appHdr').style.display = 'block';
+  document.getElementById('s1').classList.add('on');
+  window.scrollTo(0, 0);
+}
+function goHome() {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+  document.getElementById('s1').classList.add('on');
+  setActiveNav('dash');
+  window.scrollTo(0, 0);
+}
+
+// ── NAV TABS ──
+function setActiveNav(tab) {
+  ['dash','cycle','export','notif'].forEach(t => {
+    const el = document.getElementById('sn-'+t); if(el) el.className = 'sn-tab' + (t===tab?' on':'');
+  });
+}
+function showTab(tab) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+  const map = {dash:'s1',cycle:'s2',export:'s3',notif:'s4'};
+  document.getElementById(map[tab]).classList.add('on');
+  setActiveNav(tab);
+  window.scrollTo(0, 0);
+}
+function cycleLaunched() {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+  document.getElementById('s2c').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+// ── TABLE DATA ──
+const data = [
+  {n:"Esere Sobotie",d:"Design",m:"Aderemi Oladele",p1:"sp-d",p2:"sp-d",p3:"sp-d",p4:"sp-d",g:"B",s:"Complete"},
+  {n:"Aisha Idowu",d:"Design",m:"Aderemi Oladele",p1:"sp-d",p2:"sp-o",p3:"sp-p",p4:"sp-p",g:"",s:"Self-Review Open"},
+  {n:"Mayomikun Eze",d:"Design",m:"Aderemi Oladele",p1:"sp-d",p2:"sp-d",p3:"sp-d",p4:"sp-d",g:"A",s:"Complete"},
+  {n:"Oluwaseun Adele",d:"Design",m:"Aderemi Oladele",p1:"sp-p",p2:"sp-p",p3:"sp-p",p4:"sp-p",g:"",s:"Not Started"},
+  {n:"Asah Nworah",d:"Growth",m:"Daniel Adeyemi",p1:"sp-d",p2:"sp-d",p3:"sp-d",p4:"sp-d",g:"B",s:"Complete"},
+  {n:"Daniel Adeyemi",d:"Growth",m:"Chinwe Okafor",p1:"sp-d",p2:"sp-d",p3:"sp-o",p4:"sp-p",g:"",s:"Mgr Review Pending"},
+  {n:"Mariam Bello",d:"Growth",m:"Daniel Adeyemi",p1:"sp-d",p2:"sp-e",p3:"sp-p",p4:"sp-p",g:"",s:"Overdue"},
+  {n:"Eme Uchenna",d:"TC",m:"Olanrewaju Taiwo",p1:"sp-d",p2:"sp-d",p3:"sp-d",p4:"sp-d",g:"D",s:"Complete"},
+  {n:"Gartrude Obi",d:"Biz Dev",m:"Mayomikun Adeyemi",p1:"sp-d",p2:"sp-d",p3:"sp-d",p4:"sp-d",g:"A",s:"Complete"},
+  {n:"Olanrewaju Taiwo",d:"TC",m:"Chinwe Okafor",p1:"sp-d",p2:"sp-d",p3:"sp-d",p4:"sp-o",g:"",s:"Discussion Pending"},
+];
+const gCls = {A:"gdA",B:"gdB",C:"gdC",D:"gdD","":"gdn"};
+function spLabel(c){return c==='sp-d'?'Done':c==='sp-o'?'Open':c==='sp-e'?'Overdue':'Pending';}
+let sel = new Set();
+
+function render() {
+  const c = document.getElementById('trows'); c.innerHTML = '';
+  data.forEach((e, i) => {
+    const r = document.createElement('div'); r.className = 'dt-row' + (sel.has(i)?' sel':'');
+    const gs = e.g ? `<span class="gd ${gCls[e.g]}">${e.g}</span>` : `<span class="gd gdn">—</span>`;
+    const ss = e.s==='Complete' ? `<span class="sp sp-d">${e.s}</span>` : e.s.includes('Overdue') ? `<span class="sp sp-e">${e.s}</span>` : e.s==='Not Started' ? `<span class="sp sp-p">${e.s}</span>` : `<span class="sp sp-o">${e.s}</span>`;
+    r.innerHTML = `<div><input type="checkbox" class="chk" ${sel.has(i)?'checked':''} onchange="togRow(${i},this)"/></div><div><div class="emp-name">${e.n}</div><div class="emp-dept">${e.d}</div></div><div class="emp-mgr">${e.d}</div><div class="emp-mgr">${e.m}</div><div><span class="sp ${e.p1}">${spLabel(e.p1)}</span></div><div><span class="sp ${e.p2}">${spLabel(e.p2)}</span></div><div><span class="sp ${e.p3}">${spLabel(e.p3)}</span></div><div><span class="sp ${e.p4}">${spLabel(e.p4)}</span></div><div>${gs}</div>`;
+    c.appendChild(r);
+  });
+}
+function togRow(i, cb) { if(cb.checked) sel.add(i); else sel.delete(i); updNudge(); render(); }
+function togAll(cb) { data.forEach((_,i) => cb.checked ? sel.add(i) : sel.delete(i)); updNudge(); render(); }
+function updNudge() {
+  const nb = document.getElementById('nudgeBar'), nc = document.getElementById('nudgeCount');
+  if (sel.size > 0) { nb.style.display='flex'; nc.textContent=`${sel.size} employee${sel.size>1?'s':''} selected`; }
+  else nb.style.display='none';
+}
+function clearSel() { sel.clear(); document.getElementById('selAll').checked=false; updNudge(); render(); }
+function sendNudge() { alert(`Reminder sent to ${sel.size} employee${sel.size>1?'s':''}.`); clearSel(); }
+
+// ── INIT ──
+render();
+</script>
+</body>
+</html>
